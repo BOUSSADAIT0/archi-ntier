@@ -1,0 +1,77 @@
+.event-card {
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.session-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.session-card:hover {
+    background-color: #f8f9fa;
+}
+
+.booking-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.booking-card.confirmed {
+    border-left: 4px solid #28a745;
+}
+
+.booking-card.pending {
+    border-left: 4px solid #ffc107;
+}
+
+.booking-card.cancelled {
+    border-left: 4px solid #dc3545;
+}
+
+.price {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.seats-available {
+    color: #6c757d;
+}
+
+.event-image {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.loading::after {
+    content: "";
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+} 

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Système de Réservation d'Événements</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Administration des Événements</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="showEventsList()">Liste des Événements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showAddEventForm()">Ajouter un Événement</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Retour au site</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Liste des événements -->
+        <div id="eventsList">
+            <h2>Gestion des Événements</h2>
+            <div id="eventsContainer" class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Lieu</th>
+                            <th>Catégories</th>
+                            <th>Sessions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eventsTableBody">
+                        <!-- Les événements seront ajoutés ici dynamiquement -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Formulaire d'ajout d'événement -->
+        <div id="addEventForm" style="display: none;">
+            <h2>Ajouter un Événement</h2>
+            <form id="eventForm" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="eventName" class="form-label">Nom de l'événement</label>
+                    <input type="text" class="form-control" id="eventName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="eventDescription" class="form-label">Description</label>
+                    <textarea class="form-control" id="eventDescription" rows="3" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="eventVenue" class="form-label">Lieu</label>
+                    <input type="text" class="form-control" id="eventVenue" required>
+                </div>
+                <div class="mb-3">
+                    <label for="eventCategories" class="form-label">Catégories (séparées par des virgules)</label>
+                    <input type="text" class="form-control" id="eventCategories" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Créer l'événement</button>
+            </form>
+        </div>
+
+        <!-- Modal d'ajout de session -->
+        <div class="modal fade" id="addSessionModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajouter une Session</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="sessionForm" class="needs-validation" novalidate>
+                            <input type="hidden" id="sessionEventId">
+                            <div class="mb-3">
+                                <label for="sessionStartTime" class="form-label">Date et heure de début</label>
+                                <input type="datetime-local" class="form-control" id="sessionStartTime" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sessionEndTime" class="form-label">Date et heure de fin</label>
+                                <input type="datetime-local" class="form-control" id="sessionEndTime" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sessionCapacity" class="form-label">Capacité</label>
+                                <input type="number" class="form-control" id="sessionCapacity" min="1" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sessionBasePrice" class="form-label">Prix de base</label>
+                                <input type="number" class="form-control" id="sessionBasePrice" min="0" step="0.01" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-primary" onclick="submitSession()">Ajouter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html> 

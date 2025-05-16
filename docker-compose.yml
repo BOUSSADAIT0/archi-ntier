@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  mariadb-1:
+    image: mariadb:10.6
+    container_name: mariadb-node-1
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: event_booking
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+    volumes:
+      - ./config/mariadb/node1:/etc/mysql/conf.d
+      - ./config/mariadb/init-galera.sh:/docker-entrypoint-initdb.d/init-galera.sh
+      - ./config/mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mariadb1_data:/var/lib/mysql
+    ports:
+      - "13306:3306"
+    networks:
+      - galera-network
+    command: --wsrep-new-cluster
+
+  mariadb-2:
+    image: mariadb:10.6
+    container_name: mariadb-node-2
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: event_booking
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+    volumes:
+      - ./config/mariadb/node2:/etc/mysql/conf.d
+      - ./config/mariadb/init-galera.sh:/docker-entrypoint-initdb.d/init-galera.sh
+      - ./config/mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mariadb2_data:/var/lib/mysql
+    ports:
+      - "13307:3306"
+    networks:
+      - galera-network
+    depends_on:
+      - mariadb-1
+
+  mariadb-3:
+    image: mariadb:10.6
+    container_name: mariadb-node-3
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: event_booking
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+    volumes:
+      - ./config/mariadb/node3:/etc/mysql/conf.d
+      - ./config/mariadb/init-galera.sh:/docker-entrypoint-initdb.d/init-galera.sh
+      - ./config/mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mariadb3_data:/var/lib/mysql
+    ports:
+      - "13308:3306"
+    networks:
+      - galera-network
+    depends_on:
+      - mariadb-1
+
+  haproxy:
+    image: haproxy:2.4
+    container_name: haproxy
+    restart: unless-stopped
+    volumes:
+      - ./config/haproxy:/usr/local/etc/haproxy
+    ports:
+      - "13309:3306"  # MySQL protocol port
+      - "18404:8404"  # Statistics page
+    depends_on:
+      - mariadb-1
+      - mariadb-2
+      - mariadb-3
+    networks:
+      - galera-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: event-booking-api
+    restart: unless-stopped
+    environment:
+      - DB_HOST=haproxy
+      - DB_PORT=3306
+      - DB_USER=app_user
+      - DB_PASSWORD=app_password
+      - DB_NAME=event_booking
+    ports:
+      - "18000:8000"
+    depends_on:
+      - haproxy
+    networks:
+      - galera-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: event-booking-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    networks:
+      - galera-network
+
+volumes:
+  mariadb1_data:
+  mariadb2_data:
+  mariadb3_data:
+
+networks:
+  galera-network:
+    driver: bridge 
